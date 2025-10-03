@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flipbook Interactif</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color:rgb(0, 0, 0);
+            height: 100vh;
+            overflow: hidden;
+            padding: 20px;
+            font-family: "Georgia", "Times New Roman", serif;
+        color: #333;
+        }
+
+        .book-container {
+            perspective: 2000px;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .book {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            display: flex;
+            overflow-y: scroll;
+            scrollbar-width: none;
+        }
+
+        .book::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, 
+                transparent 0%, 
+                #d0d0d0 10%, 
+                #a0a0a0 50%, 
+                #d0d0d0 90%, 
+                transparent 100%);
+            transform: translateX(-50%);
+            z-index: 100;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .page {
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            background: white;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+            transform-origin: left center;
+            backface-visibility: hidden;
+        }
+
+        .page.left-page {
+            left: 0;
+        }
+
+        .page.right-page {
+            right: 0;
+        }
+
+        .page.cover {
+            width: 100%;
+            height: 100%;
+            background-position: center;
+            background: black;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            z-index: 101;
+            justify-content:end;
+            align-items: end;
+            text-align: center;
+        }
+        .page.cover_after{
+            background-color: white;
+            width: 100%;
+            height: 100%;
+            background-position: center;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            z-index: 101;
+            justify-content:end;
+            align-items: end;
+            text-align: center;
+        }
+        .page.cover .content-cover {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background-image: 
+        linear-gradient(to bottom, 
+            rgba(0, 0, 0, 0) 0%, 
+            rgba(0, 0, 0, 0) 30%,
+            rgba(0, 0, 0, 0.4) 50%,
+            rgba(0, 0, 0, 0.8) 80%,
+            rgba(0, 0, 0, 1) 100%
+        ),
+        url('./image/cover.jpg'),
+        url('./image/cover.jpg');
+    background-size: 
+        100% 100%,
+        100% auto,
+        100% auto;
+    background-repeat: no-repeat, no-repeat, no-repeat;
+    background-position: 
+        center,
+        top center,
+        bottom center;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .page.cover_after .content-cover_after {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background-image: url('./image/cover_after.jpg');
+            background-size: 120%;
+            background-position: center;
+            box-shadow: -20px 0 40px rgba(0,0,0,0.5);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .page.cover h1 {
+            font-size: 25px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .page.cover p {
+            opacity: 0.9;
+        }
+
+        .page.flipped {
+            transform: rotateY(-180deg);
+            z-index: 1;
+        }
+
+        .columns {
+            display: flex;
+            gap: 20px;
+            flex: 1;
+        }
+
+        .column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .content_page {
+            font-size: 0.8rem;
+            line-height: 1.5;
+            text-align: start;
+            }
+
+            /* Paragraphes */
+            .content_page p {
+            margin-bottom: 0.1rem;
+            text-indent: 0.5em; /* indentation comme dans les livres */
+            }
+
+            /* Première lettre façon lettrine */
+            .content_page p:first-of-type::first-letter {
+            font-size: 2.2rem;
+            font-weight: bold;
+            float: left;
+            margin-right: 0.2rem;
+            line-height: 1;
+            }
+
+        .card {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #6c757d;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+      /*timeline*/
+
+      /*card_image*/
+            .card_image {
+        border-radius: 6px;
+        max-width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        
+
+        
+        }
+
+        .card_image figure {
+        margin: 0;
+        text-align: center;
+        }
+
+        .card_image img {
+        max-width: 350px;
+        height: auto;
+        border-radius: 4px;
+        margin-bottom: 0.5rem;
+        }
+
+        .card_image figcaption {
+        font-size: 0.80rem;
+        font-style: italic;
+        color: #555;
+        }
+
+        .card-text {
+        text-align: justify;
+        font-size: 0.8rem;
+        line-height: 1.5;
+        text-indent: 0.5em; 
+        }
+
+        .info-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #fff;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .info-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: slideIn 0.3s;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #666;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .close-button:hover {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .content-title {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .card_text p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .card_text p:last-child {
+            margin-bottom: 0;
+        }
+
+        .user-action {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            vertical-align: middle;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .user-action h2 {
+    margin: 0;              /* supprime la marge par défaut du h2 */
+    line-height: 1;         /* évite que le texte prenne trop de hauteur */
+}
+        .user-action img {
+            width: 40px;
+            height: 40px;
+        }   
+      /*card_image*/
+
+      
+        .container {
+            width: 100%;
+            max-width: 900px;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        .container .description {
+            text-indent: 0.5em;
+            font-size: 0.8rem;
+            line-height: 1.5;
+            text-align: start;
+            margin-bottom: 1em;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 5px;
+            font-size: 1em;
+            font-weight: 600;
+            color: #6c757d;
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 0.5em;
+            color: #94a3b8;
+        }
+
+        .image-container {
+            position: relative;
+            width: 80%;
+            background: #0f172a;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+        .image-container.video{
+            background-color: transparent;
+            box-shadow: none;
+        }
+
+        .image-container img {
+            width: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .loading-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #64748b;
+            font-size: 0.5em;
+        }
+
+        .year-display {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.85);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.5em;
+            font-weight: 600;
+            color: #f1f5f9;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .timeline-container {
+            width: 100%;
+        }
+
+        .timeline-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.5em;
+            color: #94a3b8;
+        }
+
+        .slider-wrapper {
+            position: relative;
+            width: 100%;
+            height: 25px;
+            display: flex;
+            align-items: center;
+        }
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(to right, #3b82f6 0%, #ef4444 100%);
+            border-radius: 10px;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+            position: relative;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            background: #f1f5f9;
+            border: 3px solid #3b82f6;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.5);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            background: #f1f5f9;
+            border: 3px solid #3b82f6;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        input[type="range"]::-moz-range-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.5);
+        }
+
+        .cache-info {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.85em;
+            color: #64748b;
+        }
+
+        .error-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ef4444;
+            text-align: center;
+            padding: 20px;
+        }
+
+      /*timeline*/
+        .page-number {
+            text-align: center;
+            color: #adb5bd;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: space-between;
+            gap: 90vw;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background-color: transparent;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: rgba(31, 31, 31, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover:not(:disabled) {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .page-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-title {
+            font-size: 1.2rem;
+            color: #495057;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .content-title {
+            font-size: 1rem;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .page {
+                padding: 20px;
+            }
+
+            .columns {
+                flex-direction: column;
+            }
+
+            .page.cover h1 {
+                font-size: 2rem;
+            }
+
+            .page.cover p {
+                font-size: 1rem;
+            }
+
+            .navigation {
+                bottom: 20px;
+            }
+
+            .nav-button {
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="book-container">
+        <div class="book" id="book">
+            <!-- Page de garde -->
+            <div class="page cover" data-page="0">
+                <div class="content-cover">
+                    <h1>Diaries of the Indo gangetic plains</h1>
+                    <div class="card_image">
+                        <div class="card-text">
+                            <p>
+                            stories from the past present and future
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="page cover_after" data-page="1">
+                <div style="position: absolute; top: 35%; left: 10%; color: #333; font-size: 0.8rem; text-align: left;">
+                    <img src="./image/logo_NE-AR.jpg" alt="Logo" style="width: 120px; height: auto; margin: 20px;">
+                    <img src="./image/Open_science.jpg" alt="Logo" style="width: 120px; height: auto; margin: 20px;">
+
+                </div>
+                <div class="content-cover_after">
+                    
+                </div>
+                
+            </div>
+
+            <!-- Pages 1-2 -->
+            <div class="page left-page" data-page="2" style="display: none;">
+                <div class="page-content">
+                    <h2 class="page-title">Temperature and Heat Stress in Uttarakhand</h2>
+                    <div class="columns">
+                        <div class="column">
+                            <div class="content_page">
+                                <p>
+                                    Uttarakhand is experiencing rising temperatures, particularly in its lower regions.
+                                    Increased heat is causing glaciers to shrink, threatening the water supply for millions of people.
+                                </p>
+                                <p>
+                                    In the foothills, rising temperatures lead to heat stress, causing health problems like heat strokes.
+                                    Irregular rainfall patterns threaten agricultural crops such as wheat and rice.
+                                    Extreme weather events, including heatwaves and droughts, are becoming more frequent, affecting local livelihoods.
+                                </p>
+                            </div>
+
+                            <div class="container">
+                                <p class="description">
+                                    This color-coded map shows a progression of changing global surface temperatures since 1884. Dark blue indicates areas cooler than average. Dark red indicates areas warmer than average.<br><span style="font-weight: bold;">You can drag the slider left and right on the bar.</span>
+                                </p>
+                                <div class="image-container" id="imageContainer_1">
+                                    <div class="loading-indicator" id="loadingIndicator_1">Chargement...</div>
+                                    <img id="climateImage" style="display: none;" alt="Carte température mondiale">
+                                    <div class="year-display" id="yearDisplay">1884</div>
+                                </div>
+
+                                <div class="timeline-container">
+                                    <div class="timeline-info">
+                                        <span>1884</span>
+                                        <span>2022</span>
+                                    </div>
+                                    <div class="slider-wrapper">
+                                        <input type="range" id="timelineSlider_1" min="1884" max="2022" value="1884" step="1">
+                                    </div>
+                                </div>
+                                <h1>Global Temperature Evolution</h1>
+                                <p class="subtitle">1884 - 2022</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page right-page" data-page="3" style="display: none;">
+                <div class="page-content">
+                    <div class="columns">
+                       <div class="column">
+                        <div class="card-text">
+                                    <p>
+                                    This image reflects the profound transformation of our planet under climate change. It contrasts a past where rivers flowed abundantly and ecosystems thrived in harmony with humanity, with a present marked by cracked soils, extreme heat, and mounting environmental stress. The scene serves as a reminder that the choices we make now will directly shape the future of our world.
+                                    </p>
+                                </div>
+                            <div class="card_image">
+                                <figure>
+                                    <img src="./image/IMG-20250930-WA0009.jpg" alt="CO₂ Levels & Emissions in Delhi" />
+                                    <figcaption>Climate Change: Past, Present, and Possible Futures</figcaption>
+                                </figure>
+
+                                
+                                
+                            </div>
+                            <div class="user-action" id="infoBtn">
+                                <h2 class="content-title">Actions You Can Take</h2>
+                                <button class="info-button" ><img src="./image/info.png" alt=""></button>
+                            </div>
+
+                            <div class="modal-overlay" id="modalOverlay">
+                                <div class="modal-box">
+                                    <button class="close-button" id="closeBtn">&times;</button>
+                                    <h2 class="content-title">USER INFO</h2>
+                                    <div class="card_text">
+                                        <p>Plant trees, conserve water, support green roofs, and stay informed about local climate initiatives. Helping the environment locally reduces heat stress for communities and ecosystems.</p>
+                                        <p>Planners can increase tree cover, create shaded walkways, use reflective materials, and plan open spaces to reduce urban heat islands and protect residents from extreme heat.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Pages 3-4 -->
+            <div class="page left-page" data-page="4" style="display: none;">
+                <div class="page-content">
+                    <h2 class="page-title">CO2 Levels and Emissions in Delhi</h2>
+                    <div class="columns">
+                        <div class="column">
+                            <div class="content_page">
+                                <p>
+                                Delhi has high CO2 levels, making it one of the most polluted cities globally. Main sources of CO2 emissions: industrial activities, traffic, and burning of crop residues. CO2 levels in Delhi worsen during winter, contributing to global warming. The city is working to reduce emissions through stricter vehicle standards, promoting electric vehicles, and cleaner industrial technologies. Despite these efforts, population growth and urbanization continue to increase the emissions burden.
+                                </p>
+                                
+                            </div>
+                            <div class="container">
+                                <p class="description">
+                                    The animated map below shows the historical changes in global carbon dioxide over time. Note the colors change as the amount of CO2 rises from 365 parts per million (ppm) in 2002 to over 420 ppm in 2022.<span style="font-weight: bold;">You can drag the slider left and right on the bar.</span>
+                                </p>
+                                <div class="image-container" id="imageContainer_2">
+                                    <div class="loading-indicator" id="loadingIndicator_2">Chargement...</div>
+                                    <img id="co2Image" style="display: none;" alt="Carte CO₂ atmosphérique">
+                                    <div class="year-display" id="dateDisplay">September 2002</div>
+                                </div>
+
+                                <div class="timeline-container">
+                                    <div class="timeline-info">
+                                        <span>September 2002</span>
+                                        <span>December 2022</span>
+                                    </div>
+                                    <div class="slider-wrapper">
+                                        <input type="range" id="timelineSlider_2" min="0" max="243" value="0" step="1">
+                                    </div>
+                                </div>
+                                <h1>Atmospheric CO₂ Evolution</h1>
+                                <p class="subtitle">September 2002 - December 2022</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="page right-page" data-page="5" style="display: none;">
+                <div class="page-content">
+                    <div class="columns">
+                        <div class="column">
+                            <div class="card-text">
+                                    <p>
+                                    This sequence of images illustrates how urban transportation impacts air quality. In the past, fewer vehicles meant clearer skies and healthier streets. Today, heavy traffic and emissions darken the air, threatening both the environment and public health. If no action is taken, the future foresees worsening smog and smoke. Yet with sustainable choices, a different future is possible one of cleaner air, greener streets, and a harmonious balance between people and nature.
+                                    </p>
+                                </div>
+                            <div class="card_image">
+                                <figure>
+                                    <img src="./image/IMG-20250930-WA0011.jpg" alt="CO₂ Levels & Emissions in Delhi" />
+                                    <figcaption>CO₂ Emissions: Past, Present, and Possible Futures</figcaption>
+                                </figure>
+
+                                
+                            </div>
+                            <div class="user-action" id="infoBtn">
+                                <h2 class="content-title">Actions You Can Take</h2>
+                                <button class="info-button" ><img src="./image/info.png" alt=""></button>
+                            </div>
+
+                            <div class="modal-overlay" id="modalOverlay">
+                                <div class="modal-box">
+                                    <button class="close-button" id="closeBtn">&times;</button>
+                                    <h2 class="content-title">USER INFO</h2>
+                                    <div class="card_text">
+                                        <p>You can help reduce emissions by using public transport, walking or cycling, conserving electricity, and supporting clean energy initiatives. Every small action adds up to cleaner air and a healthier city.</p>
+                                        <p>Urban design can promote energy-efficient buildings, public transport, cycling lanes, and renewable energy integration to lower carbon emissions citywide.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Pages 5-6 -->
+            <div class="page left-page" data-page="6" style="display: none;">
+                <div class="page-content">
+                    <h2 class="page-title">Water and Sea-Level Rise in West Bengal – Sundarbans</h2>
+                    <div class="columns">
+                        <div class="column">
+                            <div class="content_page">
+                                <p>
+                               Sundarbans region in West Bengal is highly vulnerable to climate change, particularly due to rising sea levels.Melting ice caps and ocean thermal expansion are causing the sea level to rise, submerging low-lying islands. Saltwater intrusion is becoming more frequent, impacting freshwater resources and agricultural activities. Local communities are being displaced as their lands are submerged by rising waters.The biodiversity of the region, including unique mangrove ecosystems, is at risk due to these environmental changes.
+
+                                </p>
+                                
+                            </div>
+                            <div class="container">
+                                <p class="description">
+                                    This visualization watches the global mean sea level change through a circular window. The blue mark on the ruler shows the exact measurements of the Integrated Multi-Mission Ocean Altimeter Data for Climate Research. The level of the animated water changes more smoothly, driven by a 60 day floating average of the same data.<span style="font-weight: bold;">You can drag the slider left and right on the bar.</span>
+                                </p>
+                                <div class="image-container" id="imageContainer_3">
+                                    <div class="loading-indicator" id="loadingIndicator_3">Chargement...</div>
+                                    <img id="SeaLevelImage" style="display: none;" alt="Carte niveau de la mer - Asie">
+                                    <div class="year-display" id="yearDisplay_3">level 0</div>
+
+                                </div>
+
+                                <div class="timeline-container">
+                                    <div class="timeline-info">
+                                        <span>level 0</span>
+                                        <span>level 6</span>
+                                    </div>
+                                    
+                                    <div class="slider-wrapper">
+                                        <input type="range" id="timelineSlider_3" min="0" max="6" value="0" step="1">
+                                    </div>
+                                </div>
+                                <h1>the global mean sea level change</h1>
+                                <p class="subtitle">level 0 - level 6</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page right-page" data-page="7" style="display: none;">
+                <div class="page-content">
+                    <div class="columns">
+                        <div class="column">
+                            <div class="card-text">
+                                    <p>
+                                        Coastal neighborhoods once enjoyed stability with dry, predictable streets. Today, floods disrupt daily life and families struggle in waterlogged homes. Without action, entire communities risk submersion and loss, but with bold choices, a safer future emerges  elevated housing, resilient infrastructure, green corridors, and thriving communities on clean, raised streets.
+                                    </p>
+                                </div>
+                            <div class="card_image">
+                                <figure>
+                                    <img src="./image/IMG-20250930-WA0012.jpg" alt="the global mean sea level change" />
+                                    <figcaption>Water levels rise: Past, Present, and Possible Futures</figcaption>
+                                </figure>
+                            </div>
+                            <div class="user-action" id="infoBtn">
+                                <h2 class="content-title">Actions You Can Take</h2>
+                                <button class="info-button" ><img src="./image/info.png" alt=""></button>
+                            </div>
+
+                            <div class="modal-overlay" id="modalOverlay">
+                                <div class="modal-box">
+                                    <button class="close-button" id="closeBtn">&times;</button>
+                                    <h2 class="content-title">USER INFO</h2>
+                                    <div class="card_text">
+                                        <p>Save water, reduce plastic use, support wetland and mangrove restoration, and advocate for sustainable coastal development. Small acts protect communities from flooding and rising seas.</p>
+                                        <p>Urban planning can focus on flood management, rainwater harvesting, drainage systems, and wetland preservation to prevent water scarcity and protect against sea-level rise.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Pages 7-8 -->
+             <div class="page left-page" data-page="8" style="display: none;">
+                <div class="page-content">
+                    <h2 class="page-title">Vegetation & Agriculture in Punjab</h2>
+                    <div class="columns">
+                        <div class="column">
+                            <div class="content_page">
+                                <p>
+                                Punjab, known as the "Granary of India" is heavily dependent on agriculture, particularly wheat and rice. Erratic rainfall and rising temperatures are affecting crop yield and irrigation patterns. Groundwater levels are depleting rapidly due to over-irrigation, while changing precipitation patterns cause droughts and floods. Crop diseases and pests are becoming more prevalent due to the altered climate conditions. The agricultural sector is struggling to adapt, with the need for climate-resilient farming techniques becoming more urgent.
+                                </p>
+                                
+                            </div>
+                            <div class="container">
+                                <p class="description">
+                                    This map shows Normalized Difference Vegetation Index (NDVI) values a measure of the "greenness" of Earth's landscapes—from February 2000 to the present. The values, derived using data collected by the Moderate Resolution Imaging Spectroradiometer (MODIS) onboard NASA's Terra satellite, range from -0.1 to 0.9 and have no unit..<span style="font-weight: bold;">click on it to start.</span>
+                                </p>
+                                <div class="image-container video" id="imageContainer_">
+                                    <video id="SeaLevelVideo" controls loop autoplay muted style="width: 100%;">
+                                        <source src="./image/NASA SVS - Global Vegetation Index, Terra MODIS.mp4" type="video/mp4">
+                                        Votre navigateur ne supporte pas la vidéo.
+                                    </video>
+                                </div>
+
+                                <h1>Vegetation Index (NDVI)</h1>
+                                <p class="subtitle">February 2000 to the present</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page right-page" data-page="9" style="display: none;">
+                <div class="page-content">
+                    <div class="columns">
+                        <div class="column">
+                            <div class="card-text">
+                                    <p>
+                                    Punjab, once known as India's "breadbasket" thrived on fertile fields and abundant harvests. Today, floods, erratic rainfall, and climate change threaten crops and farmers' survival. The future hangs in the balance: with sustainable irrigation, renewable energy, and climate-resilient farming, Punjab can preserve its soil and prosperity; without action, it risks barren fields, cracked earth, and broken livelihoods.
+                                    </p>
+                            </div>
+                            <div class="card_image">
+                                <figure>
+                                    <img src="./image/IMG-20250930-WA0008.jpg" alt="the global mean sea level change" />
+                                    <figcaption>Vegetation : Past, Present, and Possible Futures</figcaption>
+                                </figure>
+                            </div>
+                            <div class="user-action" id="infoBtn">
+                                <h2 class="content-title">Actions You Can Take</h2>
+                                <button class="info-button" ><img src="./image/info.png" alt=""></button>
+                            </div>
+
+                            <div class="modal-overlay" id="modalOverlay">
+                                <div class="modal-box">
+                                    <button class="close-button" id="closeBtn">&times;</button>
+                                    <h2 class="content-title">USER INFO</h2>
+                                    <div class="card_text">
+                                        <p>City planners can preserve green spaces, urban forests, community gardens, and rooftop gardens, ensuring greenery balances urban sprawl and supports local agriculture.</p>
+                                        <p>Adopt sustainable farming, reduce chemical fertilizers, support crop diversification, and plant native trees. Your choices strengthen soil, protect crops, and ensure food security.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Pages 8-9 -->
+             <div class="page left-page" data-page="10" style="display: none;">
+                <div class="page-content">
+                    <h2 class="page-title">Air Pollution in Delhi</h2>
+                    <div class="columns">
+                        <div class="column">
+                            <div class="content_page">
+                                <p>
+                                 Delhi suffers from severe air pollution due to traffic, industrial emissions, and agricultural stubble burning. The winter months see "smog" where pollutants get trapped, worsening the air quality. PM2.5 and PM10 levels in the air frequently exceed safe limits, leading to respiratory and cardiovascular diseases. Initiatives like the Odd-Even vehicle scheme and green cover expansion are attempts to combat the pollution. Despite these efforts, regional and local pollution sources make it difficult to achieve clean air in the city.
+
+                                </p>
+                                
+                            </div>
+                            <div class="container">
+                                <p class="description">
+                                    This animation illustrates the levels of carbon monoxide (CO) in the Earth's atmosphere. CO is a colorless and odorless gas produced by the incomplete combustion of fossil fuels, biomass, and during forest fires. It is emitted by various human activities, including vehicles, industry, domestic wood burning, and wildfires.<span style="font-weight: bold;">click on it to start.</span>
+                                </p>
+                                <div class="image-container video" id="imageContainer_">
+                                    <video id="SeaLevelVideo" controls loop autoplay muted style="width: 100%;">
+                                        <source src="./image/NASA SVS - Carbon Monoxide (CO).mp4" type="video/mp4">
+                                    </video>
+                                </div>
+
+                                <h1>Near surface concentration of carbon monoxide (CO)</h1>
+                                <p class="subtitle">estimated by NASA’s GEOS-CF model.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page right-page" data-page="11" style="display: none;">
+                <div class="page-content">
+                    <div class="columns">
+                        <div class="column">
+                            <div class="card-text">
+                                    <p>
+                                   This visual narrative captures Delhi's air pollution crisis at India Gate, contrasting the clear skies of the past with today's smog-choked landmark that threatens public health. Two future scenarios highlight a critical choice: without action, pollution worsens; with committed policies, emission controls, and sustainable urban planning, air quality can be restored. Delhi's future depends on the decisions made today.
+                                    </p>
+                            </div>
+                            <div class="card_image">
+                                <figure>
+                                    <img src="./image/IMG-20250930-WA0013.jpg" alt="the global mean sea level change" />
+                                    <figcaption>Air Pollution in Delhi : Past, Present, and Possible Futures</figcaption>
+                                </figure>
+                            </div>
+                            <div class="user-action" id="infoBtn">
+                                <h2 class="content-title">Actions You Can Take</h2>
+                                <button class="info-button" ><img src="./image/info.png" alt=""></button>
+                            </div>
+
+                            <div class="modal-overlay" id="modalOverlay">
+                                <div class="modal-box">
+                                    <button class="close-button" id="closeBtn">&times;</button>
+                                    <h2 class="content-title">USER INFO</h2>
+                                    <div class="card_text">
+                                        <p>Reduce burning waste, plant trees, support anti-smog policies, and limit use of polluting fuels. Your choices today can lower smog and protect lungs tomorrow.</p>
+                                        <p>Urban planning can design wider roads, green belts, and pollution-free zones, reduce traffic congestion, and integrate public transport networks to lower air pollution.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-button" id="prevBtn" onclick="prevPage()">←</button>
+            <button class="nav-button" id="nextBtn" onclick="nextPage()">→</button>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 0;
+        const totalPages = 11;
+
+        function updateBook() {
+            const cover = document.querySelector('[data-page="0"]');
+            const allPages = document.querySelectorAll('.page:not(.cover)');
+            
+            // Masquer toutes les pages
+            allPages.forEach(p => p.style.display = 'none');
+            
+            if (currentPage === 0) {
+                // Afficher uniquement la page de garde
+                cover.style.display = 'flex';
+                cover.classList.remove('flipped');
+            } else {
+                // Masquer la page de garde
+                cover.style.display = 'none';
+                
+                // Afficher les deux pages actuelles
+                const leftPage = document.querySelector(`[data-page="${currentPage}"]`);
+                const rightPage = document.querySelector(`[data-page="${currentPage + 1}"]`);
+                
+                if (leftPage) leftPage.style.display = 'flex';
+                if (rightPage) rightPage.style.display = 'flex';
+            }
+            
+            // Mettre à jour les boutons
+            document.getElementById('prevBtn').disabled = currentPage === 0;
+            document.getElementById('nextBtn').disabled = currentPage >= totalPages - 1;
+
+            
+        }
+        const infoBtns = document.querySelectorAll('.user-action .info-button');
+        const modals = document.querySelectorAll('.modal-overlay');
+        const closeBtns = document.querySelectorAll('.close-button');
+        infoBtns.forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                modals[index].style.display = 'flex';
+            });
+        });
+        closeBtns.forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                modals[index].style.display = 'none';
+            });
+        });
+        modals.forEach((modal) => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+
+        class CO2Timeline {
+            constructor() {
+                this.basePath = './co2';
+                this.availableImages = [];
+                this.currentIndex = 0;
+                this.imageCache = new Map();
+                this.cacheSize = 10;
+                
+                this.slider = document.getElementById('timelineSlider_2');
+                this.image = document.getElementById('co2Image');
+                this.dateDisplay = document.getElementById('dateDisplay');
+                this.loadingIndicator = document.getElementById('loadingIndicator_2');
+                this.cacheInfo = document.getElementById('cacheInfo_2');
+                this.imageContainer = document.getElementById('imageContainer_2');
+                
+                this.monthNames = [
+                    'January', 'Februry', 'Mars', 'April', 'May', 'June',
+                    'Jully', 'August', 'September', 'October', 'November', 'December'
+                ];
+                
+                this.isLoading = false;
+                
+                this.init();
+            }
+
+            init() {
+                this.generateImageList();
+                this.slider.max = this.availableImages.length - 1;
+                this.slider.addEventListener('input', (e) => this.handleSliderChange(e));
+                this.loadImage(this.currentIndex, true);
+                this.preloadNearbyImages(this.currentIndex);
+            }
+
+            generateImageList() {
+                const startYear = 2002;
+                const startMonth = 9;
+                let sequenceNumber = 1;
+                
+                for (let year = startYear; year <= 2022; year++) {
+                    const monthStart = (year === startYear) ? startMonth : 1;
+                    
+                    for (let month = monthStart; month <= 12; month++) {
+                        this.availableImages.push({
+                            year: year,
+                            month: month,
+                            sequence: sequenceNumber
+                        });
+                        sequenceNumber++;
+                    }
+                }
+            }
+
+            handleSliderChange(e) {
+                const index = parseInt(e.target.value);
+                this.currentIndex = index;
+                
+                const imageInfo = this.availableImages[index];
+                this.updateDateDisplay(imageInfo.year, imageInfo.month);
+                this.loadImage(index, true);
+                this.preloadNearbyImages(index);
+            }
+
+            updateDateDisplay(year, month) {
+                const monthName = this.monthNames[month - 1];
+                this.dateDisplay.textContent = `${monthName} ${year}`;
+            }
+
+            getImagePath(imageInfo) {
+                const sequenceStr = String(imageInfo.sequence).padStart(4, '0');
+                return `${this.basePath}/co2_${imageInfo.year}_${imageInfo.month}_${sequenceStr}_720x360.jpg`;
+            }
+
+            async loadImage(index, showImmediately = false) {
+                if (this.imageCache.has(index)) {
+                    if (showImmediately) {
+                        this.displayImage(this.imageCache.get(index));
+                    }
+                    return;
+                }
+
+                if (showImmediately && this.image.style.display !== 'none') {
+                    this.showLoading();
+                }
+
+                try {
+                    const imageInfo = this.availableImages[index];
+                    const img = await this.fetchImage(imageInfo);
+                    this.imageCache.set(index, img.src);
+                    
+                    if (this.imageCache.size > this.cacheSize * 2) {
+                        this.pruneCache(index);
+                    }
+                    
+                    if (showImmediately && this.currentIndex === index) {
+                        this.displayImage(img.src);
+                    }
+                    
+                    this.updateCacheInfo();
+                } catch (error) {
+                    console.error(`Erreur chargement image ${index}:`, error);
+                    if (showImmediately) {
+                        this.showError(index);
+                    }
+                }
+            }
+
+            fetchImage(imageInfo) {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    const path = this.getImagePath(imageInfo);
+                    
+                    img.onload = () => resolve(img);
+                    img.onerror = () => reject(new Error(`Impossible de charger ${path}`));
+                    
+                    img.src = path;
+                });
+            }
+
+            displayImage(src) {
+                this.image.src = src;
+                this.image.style.display = 'block';
+                this.loadingIndicator.style.display = 'none';
+                
+                const errorMsg = this.imageContainer.querySelector('.error-message');
+                if (errorMsg) errorMsg.remove();
+            }
+
+            showLoading() {
+                this.loadingIndicator.style.display = 'block';
+            }
+
+            showError(index) {
+                this.loadingIndicator.style.display = 'none';
+                const imageInfo = this.availableImages[index];
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'error-message';
+                errorMsg.textContent = `Image non disponible pour ${this.monthNames[imageInfo.month - 1]} ${imageInfo.year}`;
+            }
+
+            preloadNearbyImages(centerIndex) {
+                const radius = Math.floor(this.cacheSize / 2);
+                
+                for (let offset = 1; offset <= radius; offset++) {
+                    const nextIndex = centerIndex + offset;
+                    const prevIndex = centerIndex - offset;
+                    
+                    if (nextIndex < this.availableImages.length && !this.imageCache.has(nextIndex)) {
+                        this.loadImage(nextIndex, false);
+                    }
+                    
+                    if (prevIndex >= 0 && !this.imageCache.has(prevIndex)) {
+                        this.loadImage(prevIndex, false);
+                    }
+                }
+            }
+
+            pruneCache(currentIndex) {
+                const keysToKeep = new Set();
+                const radius = this.cacheSize;
+                
+                for (let i = currentIndex - radius; i <= currentIndex + radius; i++) {
+                    if (i >= 0 && i < this.availableImages.length) {
+                        keysToKeep.add(i);
+                    }
+                }
+                
+                for (const [index] of this.imageCache) {
+                    if (!keysToKeep.has(index)) {
+                        this.imageCache.delete(index);
+                    }
+                }
+            }
+
+            updateCacheInfo() {
+                this.cacheInfo.textContent = `Images en cache : ${this.imageCache.size}`;
+            }
+        }
+            class ClimateTimeline {
+            constructor() {
+                this.startYear = 1884;
+                this.endYear = 2022;
+                this.currentYear = this.startYear;
+                this.imageCache = new Map();
+                this.cacheSize = 10; // Nombre d'images à précharger autour de la position actuelle
+                this.basePath = './temp';
+                
+                this.slider = document.getElementById('timelineSlider_1');
+                this.image = document.getElementById('climateImage');
+                this.yearDisplay = document.getElementById('yearDisplay');
+                this.loadingIndicator = document.getElementById('loadingIndicator_1');
+                this.cacheInfo = document.getElementById('cacheInfo_1');
+                this.imageContainer = document.getElementById('imageContainer_1');
+                
+                this.isLoading = false;
+                this.loadQueue = [];
+                
+                this.init();
+            }
+
+            init() {
+                this.slider.addEventListener('input', (e) => this.handleSliderChange(e));
+                this.loadImage(this.currentYear, true);
+                this.preloadNearbyImages(this.currentYear);
+            }
+
+            handleSliderChange(e) {
+                const year = parseInt(e.target.value);
+                this.currentYear = year;
+                this.yearDisplay.textContent = year;
+                this.loadImage(year, true);
+                
+                // Préchargement intelligent des images voisines
+                this.preloadNearbyImages(year);
+            }
+
+            getImagePath(year) {
+                return `${this.basePath}/gt_${year}_720x360.jpg`;
+            }
+
+            async loadImage(year, showImmediately = false) {
+                // Si l'image est en cache, l'afficher immédiatement
+                if (this.imageCache.has(year)) {
+                    this.displayImage(this.imageCache.get(year));
+                    return;
+                }
+
+                // Afficher l'indicateur de chargement si nécessaire
+                if (showImmediately && !this.image.style.display !== 'none') {
+                    this.showLoading();
+                }
+
+                try {
+                    const img = await this.fetchImage(year);
+                    this.imageCache.set(year, img.src);
+                    
+                    // Limiter la taille du cache
+                    if (this.imageCache.size > this.cacheSize * 2) {
+                        this.pruneCache(year);
+                    }
+                    
+                    if (showImmediately && this.currentYear === year) {
+                        this.displayImage(img.src);
+                    }
+                    
+                    this.updateCacheInfo();
+                } catch (error) {
+                    console.error(`Erreur chargement image ${year}:`, error);
+                    if (showImmediately) {
+                        this.showError(year);
+                    }
+                }
+            }
+
+            fetchImage(year) {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    const path = this.getImagePath(year);
+                    
+                    img.onload = () => resolve(img);
+                    img.onerror = () => reject(new Error(`Impossible de charger ${path}`));
+                    
+                    img.src = path;
+                });
+            }
+
+            displayImage(src) {
+                this.image.src = src;
+                this.image.style.display = 'block';
+                this.loadingIndicator.style.display = 'none';
+                
+                // Retirer tout message d'erreur
+                const errorMsg = this.imageContainer.querySelector('.error-message');
+                if (errorMsg) errorMsg.remove();
+            }
+
+            showLoading() {
+                this.loadingIndicator.style.display = 'block';
+            }
+
+            showError(year) {
+                this.loadingIndicator.style.display = 'none';
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'error-message';
+                errorMsg.textContent = `Image non disponible pour ${year}`;
+            }
+
+            preloadNearbyImages(centerYear) {
+                // Précharger les images dans un rayon autour de l'année actuelle
+                const radius = Math.floor(this.cacheSize / 2);
+                
+                for (let offset = 1; offset <= radius; offset++) {
+                    const nextYear = centerYear + offset;
+                    const prevYear = centerYear - offset;
+                    
+                    if (nextYear <= this.endYear && !this.imageCache.has(nextYear)) {
+                        this.loadImage(nextYear, false);
+                    }
+                    
+                    if (prevYear >= this.startYear && !this.imageCache.has(prevYear)) {
+                        this.loadImage(prevYear, false);
+                    }
+                }
+            }
+
+            pruneCache(currentYear) {
+                // Garder seulement les images proches de l'année actuelle
+                const keysToKeep = new Set();
+                const radius = this.cacheSize;
+                
+                for (let year = currentYear - radius; year <= currentYear + radius; year++) {
+                    if (year >= this.startYear && year <= this.endYear) {
+                        keysToKeep.add(year);
+                    }
+                }
+                
+                for (const [year] of this.imageCache) {
+                    if (!keysToKeep.has(year)) {
+                        this.imageCache.delete(year);
+                    }
+                }
+            }
+
+            updateCacheInfo() {
+                this.cacheInfo.textContent = `Images en cache : ${this.imageCache.size}`;
+            }
+        }
+        class SeaLevelTimeline {
+            constructor() {
+                this.minLevel = 0;
+                this.maxLevel = 6;
+                this.currentLevel = this.minLevel;
+                this.imageCache = new Map();
+                this.cacheSize = 7; // Précharger toutes les images (seulement 7)
+                this.basePath = './sea_level';
+                
+                this.slider = document.getElementById('timelineSlider_3');
+                this.image = document.getElementById('SeaLevelImage');
+                this.yearDisplay = document.getElementById('yearDisplay_3');
+                this.loadingIndicator = document.getElementById('loadingIndicator_3');
+                this.cacheInfo = document.getElementById('cacheInfo');
+                this.imageContainer = document.getElementById('imageContainer_3');
+                
+                this.isLoading = false;
+                this.loadQueue = [];
+                
+                this.init();
+            }
+
+            init() {
+                this.slider.addEventListener('input', (e) => this.handleSliderChange(e));
+                this.loadImage(this.currentLevel, true);
+                this.preloadNearbyImages(this.currentLevel);
+            }
+
+            handleSliderChange(e) {
+                const level = parseInt(e.target.value);
+                this.currentLevel = level;
+                this.yearDisplay.textContent = `Niveau ${level}`;
+                this.loadImage(level, true);
+                
+                // Préchargement intelligent des images voisines
+                this.preloadNearbyImages(level);
+            }
+
+            getImagePath(level) {
+                return `${this.basePath}/seaLevel6_asia_${level}.jpeg`;
+            }
+
+            async loadImage(level, showImmediately = false) {
+                // Si l'image est en cache, l'afficher immédiatement
+                if (this.imageCache.has(level)) {
+                    this.displayImage(this.imageCache.get(level));
+                    return;
+                }
+
+                // Afficher l'indicateur de chargement si nécessaire
+                if (showImmediately && !this.image.style.display !== 'none') {
+                    this.showLoading();
+                }
+
+                try {
+                    const img = await this.fetchImage(level);
+                    this.imageCache.set(level, img.src);
+                    
+                    // Limiter la taille du cache (bien que peu probable avec seulement 7 images)
+                    if (this.imageCache.size > this.cacheSize * 2) {
+                        this.pruneCache(level);
+                    }
+                    
+                    if (showImmediately && this.currentLevel === level) {
+                        this.displayImage(img.src);
+                    }
+                    
+                    this.updateCacheInfo();
+                } catch (error) {
+                    console.error(`Erreur chargement image niveau ${level}:`, error);
+                    if (showImmediately) {
+                        this.showError(level);
+                    }
+                }
+            }
+
+            fetchImage(level) {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    const path = this.getImagePath(level);
+                    
+                    img.onload = () => resolve(img);
+                    img.onerror = () => reject(new Error(`Impossible de charger ${path}`));
+                    
+                    img.src = path;
+                });
+            }
+
+            displayImage(src) {
+                this.image.src = src;
+                this.image.style.display = 'block';
+                this.loadingIndicator.style.display = 'none';
+                
+                // Retirer tout message d'erreur
+                const errorMsg = this.imageContainer.querySelector('.error-message');
+                if (errorMsg) errorMsg.remove();
+            }
+
+            showLoading() {
+                this.loadingIndicator.style.display = 'block';
+            }
+
+            showError(level) {
+                this.loadingIndicator.style.display = 'none';
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'error-message';
+                errorMsg.textContent = `Image non disponible pour le niveau ${level}`;
+            }
+
+            preloadNearbyImages(centerLevel) {
+                // Précharger les images dans un rayon autour du niveau actuel
+                const radius = Math.floor(this.cacheSize / 2);
+                
+                for (let offset = 1; offset <= radius; offset++) {
+                    const nextLevel = centerLevel + offset;
+                    const prevLevel = centerLevel - offset;
+                    
+                    if (nextLevel <= this.maxLevel && !this.imageCache.has(nextLevel)) {
+                        this.loadImage(nextLevel, false);
+                    }
+                    
+                    if (prevLevel >= this.minLevel && !this.imageCache.has(prevLevel)) {
+                        this.loadImage(prevLevel, false);
+                    }
+                }
+            }
+
+            pruneCache(currentLevel) {
+                // Garder seulement les images proches du niveau actuel
+                const keysToKeep = new Set();
+                const radius = this.cacheSize;
+                
+                for (let level = currentLevel - radius; level <= currentLevel + radius; level++) {
+                    if (level >= this.minLevel && level <= this.maxLevel) {
+                        keysToKeep.add(level);
+                    }
+                }
+                
+                for (const [level] of this.imageCache) {
+                    if (!keysToKeep.has(level)) {
+                        this.imageCache.delete(level);
+                    }
+                }
+            }
+
+            updateCacheInfo() {
+                this.cacheInfo.textContent = `Images en cache : ${this.imageCache.size}`;
+            }
+        }
+
+        // Initialisation
+        const timeline = new ClimateTimeline();
+        const timeline_2 = new CO2Timeline();
+        const timeline_3 = new SeaLevelTimeline();
+
+        function nextPage() {
+    if (currentPage === 0) {
+        currentPage = 1;  // De la page de garde à cover_after
+    } else if (currentPage === 1) {
+        currentPage = 2;  // De cover_after aux premières vraies pages (2-3)
+    } else if (currentPage < totalPages - 1) {
+        currentPage += 2; 
+    }
+    updateBook();
+}
+
+function prevPage() {
+    if (currentPage === 2) {
+        currentPage = 1;  // Retour à cover_after
+    } else if (currentPage === 1) {
+        currentPage = 0;  // Retour à la page de garde
+    } else if (currentPage > 2) {
+        currentPage -= 2;  // Navigation normale par paires
+    }
+    updateBook();
+}
+        // Navigation au clavier
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'ArrowRight') {
+        nextPage();
+    } else if (event.key === 'ArrowLeft') {
+        prevPage();
+    }
+});
+
+        // Initialisation
+        updateBook();
+        
+    </script>
+</body>
+</html>
