@@ -1,0 +1,113 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/source-serif-4/opsz.css';
+@import '@fontsource-variable/source-serif-4/opsz-italic.css';
+@import '@fontsource-variable/inter/opsz.css';
+@import './styles/book.css';
+@import './styles/pages.css';
+@import './styles/print.css';
+
+@theme {
+  --color-navy-950: #071b33;
+  --color-navy-900: #0b2545;
+  --color-navy-800: #13315c;
+  --color-sci-500: #168aad;
+  --color-sci-300: #7cc6d9;
+  --color-earth-500: #4c956c;
+  --color-paper: #fbfaf6;
+  --color-mist: #f2f5f8;
+  --font-serif: 'Source Serif 4 Variable', 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+:root {
+  /* Reading stage */
+  --stage-bg: #071b33;
+  --stage-fg: #e7eef5;
+  --stage-muted: #8fa6bd;
+  --stage-line: rgb(255 255 255 / 0.1);
+  --toolbar-bg: rgb(11 37 69 / 0.86);
+  --accent: #168aad;
+  --accent-soft: #7cc6d9;
+
+  /* Paper (the book is printed matter: it stays light in both themes) */
+  --paper: #fbfaf6;
+  --ink: #0e1b2b;
+  --ink-2: #3a4a5c;
+  --ink-3: #6a7a8b;
+  --rule: #d9dee4;
+  --navy: #0b2545;
+  --deep: #071b33;
+  --sci: #168aad;
+  --earth: #4c956c;
+  --mist: #f2f5f8;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    --stage-bg: #e9edf1;
+    --stage-fg: #0b2545;
+    --stage-muted: #51667c;
+    --stage-line: rgb(11 37 69 / 0.12);
+    --toolbar-bg: rgb(255 255 255 / 0.88);
+    color-scheme: light;
+  }
+}
+:root[data-theme='light'] {
+  --stage-bg: #e9edf1;
+  --stage-fg: #0b2545;
+  --stage-muted: #51667c;
+  --stage-line: rgb(11 37 69 / 0.12);
+  --toolbar-bg: rgb(255 255 255 / 0.88);
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--stage-bg);
+  color: var(--stage-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overscroll-behavior: none;
+}
+
+button {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-soft);
+  outline-offset: 2px;
+}
+
+.noscript {
+  max-width: 40rem;
+  margin: 10vh auto;
+  padding: 0 1.25rem;
+  font-family: Georgia, serif;
+  line-height: 1.6;
+  color: #e7eef5;
+}
+.noscript .kicker {
+  font-family: system-ui, sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #7cc6d9;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

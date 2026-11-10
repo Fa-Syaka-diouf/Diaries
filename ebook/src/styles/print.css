@@ -1,0 +1,48 @@
+/* Print / "Save as PDF" edition: one designed page per A5 sheet, then the data appendix. */
+@media print {
+  @page {
+    size: 148mm 210mm;
+    margin: 0;
+  }
+  html,
+  body,
+  #root,
+  .app {
+    height: auto !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+  .app > :not(.print-edition) {
+    display: none !important;
+  }
+  .print-edition {
+    display: block !important;
+  }
+  .list-view.is-print {
+    display: block;
+    gap: 0;
+  }
+  .is-print .list-page {
+    box-shadow: none;
+    width: 148mm !important;
+    height: 210mm !important;
+    overflow: hidden;
+    break-after: page;
+    page-break-after: always;
+  }
+  .is-print .list-appendix {
+    width: auto;
+    padding: 12mm;
+    font-size: 9pt;
+  }
+  .is-print .findings-table {
+    font-size: 7.5pt;
+  }
+  .is-print .ref-list {
+    font-size: 7.5pt;
+  }
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
