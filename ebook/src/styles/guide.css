@@ -1,0 +1,389 @@
+/* ================================================================
+   User-guide pages. Design pixels on the 520 × 736 canvas;
+   phones reflow at the bottom of this file.
+   ================================================================ */
+
+/* ------------------------------------------------------------ cover */
+.cover-cases {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 7px;
+}
+.cover-cases li {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 0 6px 11px;
+  border-left: 3px solid var(--case);
+  background: linear-gradient(90deg, rgb(7 27 51 / 0.55), transparent);
+}
+.cover-cases strong {
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #fff;
+}
+.cover-cases span {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  color: rgb(255 255 255 / 0.92);
+}
+
+/* ------------------------------------------------------------ deliverables */
+.deliver {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+.deliver-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 14px;
+  border-radius: 6px;
+  background: var(--mist);
+}
+.deliver-row .qr-code {
+  padding: 2px;
+}
+.deliver-row .qr-code img {
+  width: 100%;
+  height: 100%;
+}
+.deliver-name {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy);
+}
+.deliver-name svg {
+  color: var(--sci);
+}
+.deliver-text {
+  margin-top: 2px !important;
+  font-size: 9.4px;
+  line-height: 1.4;
+}
+.deliver-url {
+  display: block;
+  margin-top: 4px;
+  font-size: 8.4px;
+  font-weight: 600;
+  color: var(--sci);
+  text-decoration: none;
+  word-break: break-all;
+}
+.deliver-url.is-extra {
+  margin-top: 1px;
+  font-weight: 400;
+}
+.deliver-url.is-soon {
+  color: var(--ink-3);
+  font-style: italic;
+  font-weight: 400;
+}
+.deliver-more {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+.deliver-more > div {
+  padding: 10px 12px;
+  border: 0.8px solid var(--rule);
+  border-radius: 6px;
+}
+
+/* ------------------------------------------------------------ how it works */
+.guide-flow {
+  margin-top: 16px;
+}
+.guide-flow::before {
+  left: 17px;
+}
+.guide-flow .flow-step {
+  gap: 14px;
+  padding-bottom: 16px;
+}
+.guide-flow .flow-step:not(:last-child)::after {
+  left: 14.5px;
+  bottom: 4px;
+}
+.guide-flow .flow-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+}
+.guide-flow .flow-title {
+  font-family: var(--font-serif);
+  font-size: 14px;
+}
+.guide-flow .flow-text {
+  font-size: 9.8px;
+}
+.guide-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 16px;
+}
+.guide-stats .stat-box + .stat-box {
+  margin-top: 0;
+}
+.guide-stats .stat-box {
+  font-size: 8.8px;
+}
+
+/* ------------------------------------------------------------ examples */
+.cases {
+  display: grid;
+  gap: 14px;
+}
+.case {
+  display: grid;
+  grid-template-columns: 172px 1fr;
+  gap: 14px;
+  padding: 11px;
+  border-radius: 6px;
+  background: var(--mist);
+  border-left: 3px solid var(--case);
+}
+.case-model {
+  margin: 0;
+  align-self: center;
+}
+.case-model img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+.case-place {
+  font-size: 8.4px;
+  color: var(--ink-3);
+}
+.case-place strong {
+  font-size: 8.4px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--case);
+}
+.case-q {
+  margin-top: 1px !important;
+  font-family: var(--font-serif);
+  font-size: 14px;
+  line-height: 1.15;
+  font-weight: 600;
+  color: var(--navy);
+}
+.case-chart {
+  margin: 5px 0 0;
+}
+.case-chart svg {
+  display: block;
+  width: 100%;
+  height: 40px;
+}
+.case-chart figcaption {
+  display: flex;
+  justify-content: space-between;
+  font-size: 6.8px;
+  color: var(--ink-3);
+}
+.case-a {
+  margin-top: 4px !important;
+  font-size: 9.2px;
+  line-height: 1.4;
+  color: var(--ink);
+}
+.case-next {
+  margin-top: 2px !important;
+  font-size: 8.2px;
+  font-style: italic;
+  color: var(--ink-3);
+}
+.cases + .fig-credit {
+  margin-top: 8px !important;
+}
+
+/* ------------------------------------------------------------ use the app */
+.use-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: center;
+}
+.use-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 11px;
+}
+.use-steps li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11.2px;
+  line-height: 1.35;
+  color: var(--ink);
+}
+.use-n {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: #fff;
+  font-family: var(--font-serif);
+  font-size: 11px;
+  font-weight: 600;
+}
+.use-qr {
+  text-align: center;
+}
+.use-qr .qr-code {
+  padding: 2px;
+  border: 0.8px solid var(--rule);
+}
+.use-qr .qr-code img {
+  width: 100%;
+  height: 100%;
+}
+.use-qr p {
+  margin-top: 4px !important;
+  font-size: 8px;
+  font-weight: 600;
+  color: var(--navy);
+}
+.read-model {
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  gap: 16px;
+  align-items: center;
+  margin: 26px 0 0;
+  padding: 12px;
+  border-radius: 6px;
+  background: var(--deep);
+  color: #e7eef5;
+}
+.read-model img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+.read-model .side-label {
+  color: #7cc6d9;
+}
+.read-model ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+  font-size: 10px;
+  line-height: 1.35;
+}
+.read-model b {
+  color: #fff;
+}
+.team {
+  margin-top: 26px;
+  padding-top: 10px;
+  border-top: 0.6px solid var(--rule);
+}
+.team ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px 10px;
+}
+.team li {
+  display: flex;
+  flex-direction: column;
+  font-size: 7.6px;
+  color: var(--ink-3);
+}
+.team strong {
+  font-size: 9px;
+  color: var(--navy);
+}
+.team-note {
+  margin-top: 10px !important;
+  font-size: 7.2px;
+  line-height: 1.4;
+  color: var(--ink-3);
+}
+
+/* ================================================================
+   Phones
+   ================================================================ */
+.mode-reflow .cover-cases span {
+  font-size: 17px;
+}
+.mode-reflow .cover-cases strong {
+  font-size: 10.5px;
+}
+.mode-reflow .deliver-row {
+  align-items: flex-start;
+}
+.mode-reflow .deliver-name {
+  font-size: 16px;
+}
+.mode-reflow .deliver-text,
+.mode-reflow .guide-flow .flow-text,
+.mode-reflow .case-a,
+.mode-reflow .use-steps li,
+.mode-reflow .read-model ul,
+.mode-reflow .guide-stats .stat-box {
+  font-size: 14px;
+}
+.mode-reflow .deliver-url,
+.mode-reflow .case-place,
+.mode-reflow .case-place strong,
+.mode-reflow .case-next,
+.mode-reflow .use-qr p {
+  font-size: 12px;
+}
+.mode-reflow .case-chart figcaption,
+.mode-reflow .team li,
+.mode-reflow .team-note {
+  font-size: 11px;
+}
+.mode-reflow .team strong {
+  font-size: 13px;
+}
+.mode-reflow .deliver-more,
+.mode-reflow .guide-stats,
+.mode-reflow .case,
+.mode-reflow .read-model,
+.mode-reflow .use-grid {
+  grid-template-columns: 1fr;
+}
+.mode-reflow .guide-flow .flow-title,
+.mode-reflow .case-q {
+  font-size: 18px;
+}
+.mode-reflow .case-chart svg {
+  height: 56px;
+}
+.mode-reflow .use-qr {
+  justify-self: center;
+}
+.mode-reflow .use-qr .qr-code {
+  margin: 0 auto;
+}
+.mode-reflow .team ul {
+  grid-template-columns: 1fr 1fr;
+}

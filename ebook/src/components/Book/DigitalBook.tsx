@@ -91,7 +91,7 @@ export function DigitalBook({ layout, initialPage, visiblePages, bookRef, onSnap
           useKeyboard={false}
           controls="auto"
           controlLabels={{ previous: 'Previous page', next: 'Next page' }}
-          aria-label="Diaries of the Indo-Gangetic Plains"
+          aria-label="NE-AR user guide: three places, three questions"
           roleDescription="book"
           liveRegionText={(_page, _count, info) => {
             const nums = info.pages.filter((i) => i < BACK_COVER).map((i) => i + 1)

@@ -1,8 +1,7 @@
 import { PAGE_H, PAGE_W } from '../../hooks/useBookLayout'
 import { PAGES } from '../Pages/pageRegistry'
-import { FindingsTable } from '../Visualizations/FindingsTable'
 import { BookPage } from './BookPage'
-import { references } from '../../data/references'
+import { CASES, casesRetrieved, casesSource, formatP, LINKS, rateText } from '../../data/guide'
 
 type Props = {
   /** Available width for one page, in CSS px. */
@@ -13,9 +12,9 @@ type Props = {
 }
 
 /**
- * Fallback reading view: the five pages one below the other, plus a data
- * appendix. Used when the reader asks for it, when the flip engine fails, and
- * as the print / PDF edition.
+ * Fallback reading view: the five pages one below the other, plus a short
+ * data note. Used when the reader asks for it, when the flip engine fails,
+ * and as the print / PDF edition.
  */
 export function ListView({ width, print, notice }: Props) {
   const reflow = !print && width < 480
@@ -40,26 +39,21 @@ export function ListView({ width, print, notice }: Props) {
           </section>
         )
       })}
-      <section className="list-appendix" aria-label="Data appendix">
-        <h2>Data appendix — every trend result in this book</h2>
+      <section className="list-appendix" aria-label="Data note">
+        <h2>Data note</h2>
         <p>
-          Values computed by <code>scripts/fetch-data.mjs</code> from the datasets listed in each row. Annual means; Mann–Kendall two-sided test; Sen’s slope with
-          95 % confidence interval (Gilbert 1987).
+          {casesSource} Retrieved {casesRetrieved}. Trends: Mann–Kendall two-sided test and Sen’s slope on yearly means, re-checked with the e-book’s own code.
         </p>
-        <FindingsTable />
-        <h2>References and credits</h2>
-        <ol className="ref-list">
-          {references.map((r) => (
-            <li key={r.id}>
-              {r.text}{' '}
-              {r.url && (
-                <a href={r.url} rel="noreferrer">
-                  {r.url.replace(/^https?:\/\//, '')}
-                </a>
-              )}
+        <ul className="ref-list">
+          {CASES.map((c) => (
+            <li key={c.id}>
+              <strong>{c.place}</strong> · {c.series.name}: {rateText(c.series, c.dp)}, {formatP(c.series.pValue)}
             </li>
           ))}
-        </ol>
+        </ul>
+        <p>
+          Method and code: <a href={LINKS.algorithm}>{LINKS.algorithm}</a> · <a href={LINKS.code}>{LINKS.code}</a>
+        </p>
       </section>
     </div>
   )

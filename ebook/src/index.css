@@ -4,6 +4,7 @@
 @import '@fontsource-variable/inter/opsz.css';
 @import './styles/book.css';
 @import './styles/pages.css';
+@import './styles/guide.css';
 @import './styles/print.css';
 
 @theme {

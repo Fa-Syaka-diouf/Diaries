@@ -9,7 +9,7 @@ export function BookLoader({ done }: Props) {
         <span className="loader-leaf" />
         <span className="loader-leaf" />
       </div>
-      <p className="loader-title">Diaries of the Indo-Gangetic Plains</p>
+      <p className="loader-title">NE-AR · Three places, three questions</p>
       <p className="loader-sub">{done ? 'Ready' : 'Opening the book…'}</p>
     </div>
   )

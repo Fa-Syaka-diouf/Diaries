@@ -9,7 +9,7 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "data": "node scripts/fetch-data.mjs",
+    "cases": "node scripts/import-cases.mjs",
     "assets": "node scripts/prepare-assets.mjs",
     "test:stats": "node scripts/lib/trend.test.mjs"
   },
