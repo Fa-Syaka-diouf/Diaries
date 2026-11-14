@@ -1,4 +1,4 @@
-import logo from '../../assets/images/ne-ar-logo.webp'
+import logo from '../../assets/images/ne-ar-logo-round.jpeg'
 
 /**
  * The back board of the book. It is part of the physical object, not one of

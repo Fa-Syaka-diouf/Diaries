@@ -1,6 +1,6 @@
 import type { PageContext } from '../Book/BookPage'
 import coverImage from '../../assets/images/cover-black-marble.webp'
-import logo from '../../assets/images/ne-ar-logo.webp'
+import logo from '../../assets/images/ne-ar-logo-round.jpeg'
 import { CASES } from '../../data/guide'
 
 export function CoverPage({ ctx }: { ctx: PageContext }) {
