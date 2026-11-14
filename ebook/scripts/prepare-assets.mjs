@@ -1,9 +1,8 @@
-// Prepares the cover image and the logo used by the guide.
+// Prepares the cover image used by the guide.
 //
 //   node scripts/prepare-assets.mjs
 //
-//  1. NASA GIBS VIIRS Black Marble (public domain) for the cover.
-//  2. The NE-AR logo from the repository, re-encoded as WebP.
+// NASA GIBS VIIRS Black Marble (public domain) for the cover.
 //
 // The three 3D model previews (src/assets/images/model-*.webp) are captured
 // from the NE-AR website's AR page; see README.
@@ -15,7 +14,6 @@ import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const REPO = join(ROOT, '..');
 const CACHE = join(ROOT, 'scripts', '.cache');
 const IMG_OUT = join(ROOT, 'src', 'assets', 'images');
 
@@ -46,6 +44,4 @@ const gibs = (layer, bbox, w, h, time) =>
 const cover = await download('cover-black-marble.jpg', gibs('VIIRS_Black_Marble', [70, 6, 94, 40], 1400, 1984, '2016-01-01'));
 await sharp(cover).resize(1400, 1984, { fit: 'fill' }).webp({ quality: 82 }).toFile(join(IMG_OUT, 'cover-black-marble.webp'));
 
-await sharp(join(REPO, 'image', 'logo_NE-AR.jpg')).resize({ width: 1200, withoutEnlargement: true }).webp({ quality: 82 }).toFile(join(IMG_OUT, 'ne-ar-logo.webp'));
-
-console.log('assets: cover and logo done');
+console.log('assets: cover done');

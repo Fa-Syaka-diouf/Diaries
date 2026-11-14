@@ -39,7 +39,7 @@ GRACE-FO water storage for the Himalaya is not in the data yet. The book says so
 
 ## Images
 
-- Cover: NASA GIBS VIIRS Black Marble 2016 (public domain). Logo: `../image/logo_NE-AR.jpg`. `npm run assets` regenerates both.
+- Cover: NASA GIBS VIIRS Black Marble 2016 (public domain). Logo: `src/assets/images/ne-ar-logo-round.jpeg`. `npm run assets` regenerates the cover.
 - 3D models (`src/assets/images/model-*.webp`): captured from the AR page of the NE-AR website. Replace them with screenshots from the AR app when available, keeping the same file names.
 
 ## Run
