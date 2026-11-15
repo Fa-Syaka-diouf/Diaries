@@ -1,7 +1,7 @@
 // Imports the three NE-AR case series and re-checks their trends.
 //
 // The yearly series come from the NE-AR Trend Detective website
-// (https://vivivarm.github.io/NEAR/), which averages NASA POWER (MERRA-2)
+// (https://vivivarm.github.io/ne-ar-trend-detective/), which averages NASA POWER (MERRA-2)
 // monthly data over every grid point inside each region box, 1981–2025.
 // Export them from the site with a browser (see README), then run:
 //
@@ -20,7 +20,7 @@ const site = JSON.parse(fs.readFileSync(input, 'utf8'))
 
 const out = {
   source:
-    'NE-AR Trend Detective website (vivivarm.github.io/NEAR): regional NASA POWER (MERRA-2) monthly data, averaged to yearly means, 1981–2025.',
+    'NE-AR Trend Detective website (vivivarm.github.io/ne-ar-trend-detective): regional NASA POWER (MERRA-2) monthly data, averaged to yearly means, 1981–2025.',
   retrieved: new Date().toISOString().slice(0, 10),
   series: {},
 }

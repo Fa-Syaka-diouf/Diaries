@@ -8,13 +8,13 @@ import modelSundarbans from '../assets/images/model-sundarbans.webp'
  * only. An empty string shows an honest "coming soon" instead of a code.
  */
 export const LINKS = {
-  website: 'https://vivivarm.github.io/NEAR/',
+  website: 'https://vivivarm.github.io/ne-ar-trend-detective/',
   /** Android app (APK), the same link as the QR code on the NE-AR website. */
   arApp: 'https://www.dropbox.com/scl/fi/et3p8otrjsk3ac27pc4bi/near_app.apk?rlkey=9e3yazl18ehz79r2jk7ebhppz&st=qiejoeoj&dl=0',
-  arWeb: 'https://www.speaksprouts.com/delhiAR/',
+  arWeb: 'https://climate-detective.vercel.app/',
   /** The method, step by step, on the website. */
-  algorithm: 'https://vivivarm.github.io/NEAR/#about',
-  code: 'https://github.com/vivivarm/NEAR',
+  algorithm: 'https://vivivarm.github.io/ne-ar-trend-detective/',
+  code: 'https://github.com/vivivarm/ne-ar-trend-detective',
   ebook: 'https://ne-ar-diaries-indo-gangetic.netlify.app',
   /** Project demo presentation: link to come. */
   demo: '',

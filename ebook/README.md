@@ -33,7 +33,7 @@ The three examples use the same series as the NE-AR website: NASA POWER (MERRA-2
 
 `scripts/import-cases.mjs` reads the series exported from the website and recomputes every trend with our own Mann–Kendall / Sen code (`scripts/lib/trend.mjs`). It stops if a result differs from the website's. The output, `src/data/generated/near-cases.json`, is committed.
 
-To refresh: open https://vivivarm.github.io/NEAR/ in a browser and, in the console, export `SCAN`, `META` and `seasonal(SER[key], 'all', Y0, Y1)` for the four keys in the script into a JSON file (`{ r: { KEY: { meta, scan, yearly: [[year, value], …] } } }`). Then run `npm run cases -- that-file.json`.
+To refresh: open https://vivivarm.github.io/ne-ar-trend-detective/ in a browser and, in the console, export `SCAN`, `META` and `seasonal(SER[key], 'all', Y0, Y1)` for the four keys in the script into a JSON file (`{ r: { KEY: { meta, scan, yearly: [[year, value], …] } } }`). Then run `npm run cases -- that-file.json`.
 
 GRACE-FO water storage for the Himalaya is not in the data yet. The book says so ("next witness").
 
