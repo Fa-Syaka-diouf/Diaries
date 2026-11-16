@@ -46,7 +46,7 @@ export function DeliverablesPage({ ctx }: { ctx: PageContext }) {
               </p>
               <p className="deliver-text">{d.text}</p>
               <a className="deliver-url" href={d.url} target="_blank" rel="noreferrer">
-                {d.url.includes('dropbox') ? 'Download the app (APK)' : shortUrl(d.url)}
+                {d.url === LINKS.arApp ? 'Download the app (APK)' : shortUrl(d.url)}
               </a>
               {d.extra && (
                 <a className="deliver-url is-extra" href={d.extra.url} target="_blank" rel="noreferrer">

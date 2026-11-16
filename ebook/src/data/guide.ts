@@ -9,8 +9,8 @@ import modelSundarbans from '../assets/images/model-sundarbans.webp'
  */
 export const LINKS = {
   website: 'https://vivivarm.github.io/ne-ar-trend-detective/',
-  /** Android app (APK), the same link as the QR code on the NE-AR website. */
-  arApp: 'https://www.dropbox.com/scl/fi/et3p8otrjsk3ac27pc4bi/near_app.apk?rlkey=9e3yazl18ehz79r2jk7ebhppz&st=qiejoeoj&dl=0',
+  /** Android app (APK) on Google Drive. */
+  arApp: 'https://drive.google.com/file/d/1HQA_0hNr_d0uB5_ysqrFBMOPcqrqJ5OV/view?usp=drivesdk',
   arWeb: 'https://climate-detective.vercel.app/',
   /** The method, step by step, on the website. */
   algorithm: 'https://vivivarm.github.io/ne-ar-trend-detective/',
